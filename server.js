@@ -9,6 +9,7 @@ var http = require('http')
 var fs = require('fs')
 var port = 3000
 var stylesheet = fs.readFileSync('gallery.css')
+var imageNames = ['ace.jpg', 'bubble.jpg', 'chess.jpg', 'fern.jpg', 'mobile,jpg']
 
 function serveImage(filename, req, res) {
     fs.readFile('images/' + filename, (err, body) => {
@@ -27,6 +28,9 @@ function serveImage(filename, req, res) {
 var server = http.createServer((req, res) => {
     switch (req.url) {
         case "/gallery":
+            var gHtml = imageNames.map((filename, alt) => {
+              return '   <img src="' + filename + '" alt="a fishing ace at work">'
+            }).join('')
             var html = '<!doctype HTML>'
                 html += '<head>'
                 html += '   <title>Gallery</title>'
@@ -34,7 +38,7 @@ var server = http.createServer((req, res) => {
                 html += '</head>'
                 html += '<body>'
                 html += '   <h1>Gallery.</h1>'
-                html += '   <img src="ace.jpg" alt="a fishing ace at work">'
+                html += gHtml
                 html += '   <h1>Hello.</h1>'
                 html += '   Time is ' + Date.now()
                 html += '</body>'
