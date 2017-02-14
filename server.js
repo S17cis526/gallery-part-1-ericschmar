@@ -38,7 +38,7 @@ function getImageNames(callback) {
  */
 function imageNamesToTags(fileNames) {
   return fileNames.map(function(fileName) {
-    return `<img src="${fileName}" alt="${fileName}">`;
+    return `<div><img src="${fileName}" alt="${fileName} class="ImageBorder"/></div>`;
   });
 }
 
@@ -57,15 +57,13 @@ function buildGallery(imageTags) {
       html += '</head>';
       html += '<body>';
       html += '  <h1>' + config.title + '</h1>';
-      html += '  <form method="GET" action="">';
-      html += '    <input type="text" name="title">';
-      html += '    <input type="submit" value="Change Gallery Title">';
-      html += '  </form>';
-      html += imageNamesToTags(imageTags).join('');
+      html += imageNamesToTags(imageTags).join('')
+      html += '<div>'
       html += ' <form action="" method="POST" enctype="multipart/form-data">';
       html += '   <input type="file" name="image">';
       html += '   <input type="submit" value="Upload Image">';
       html += ' </form>';
+      html += '</div>'
       html += '</body>';
   return html;
 }

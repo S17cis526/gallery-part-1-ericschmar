@@ -1,3 +1,41 @@
 img {
-  width: 250px;
+  width: 450px;
+  margin: auto;
+}
+
+div img{
+  margin: 10px;
+}
+
+div {
+  display: inline-block;
+}
+
+div form{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+input[type=text] {
+    padding:5px;
+    border:2px solid #ccc;
+    border-radius: 5px;
+}
+
+input[type=text]:focus {
+    border-color:#333;
+}
+
+input[type=file] {
+    padding:5px;
+    border:2px solid #ccc;
+    border-radius: 5px;
+}
+
+input[type=submit] {
+    padding:5px 15px;
+    background:#ccc;
+    border:0 none;
+    cursor:pointer;
+    border-radius: 5px;
 }
