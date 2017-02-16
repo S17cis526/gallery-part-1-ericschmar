@@ -7,6 +7,7 @@
 
 /* global variables */
 var multipart = require('./multipart');
+var template = require('./template')
 var http = require('http');
 var url = require('url');
 var fs = require('fs');
@@ -15,6 +16,9 @@ var port = 3000;
 /* load cached files */
 var config = JSON.parse(fs.readFileSync('config.json'));
 var stylesheet = fs.readFileSync('gallery.css');
+
+/* load templates */
+template.loadDir('templates')
 
 /** @function getImageNames
  * Retrieves the filenames for all images in the
@@ -50,30 +54,10 @@ function imageNamesToTags(fileNames) {
  * gallery images.
  */
 function buildGallery(imageTags) {
-    var html = '<!doctype html>';
-    html += '<head>';
-    html += '<title>' + config.title + '</title>';
-    html += '<link href="gallery.css" rel="stylesheet" type="text/css">'
-    html += '</head>';
-    html += '<body>';
-    html += '  <h1>' + config.title + '</h1>';
-    html += '<div>'
-    html += '  <form method="GET" action="">';
-    html += '    <input type="text" name="title">';
-    html += '    <input type="submit" value="Change Gallery Title">';
-    html += '  </form>';
-    html += '</div>'
-    html += '<div>'
-    html += imageNamesToTags(imageTags).join('');
-    html += '</div>'
-    html += '<div>'
-    html += ' <form action="" method="POST" enctype="multipart/form-data">';
-    html += '   <input type="file" name="image">';
-    html += '   <input type="submit" value="Upload Image">';
-    html += ' </form>';
-    html += '</div>'
-    html += '</body>';
-    return html;
+  return template.render('gallery.html', {
+    title: config.title,
+    fileNames: imageTags
+  });
 }
 
 /** @function serveGallery
