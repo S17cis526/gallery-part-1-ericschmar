@@ -38,7 +38,7 @@ function getImageNames(callback) {
  */
 function imageNamesToTags(fileNames) {
   return fileNames.map(function(fileName) {
-    return `<div><img src="${fileName}" alt="${fileName} class="ImageBorder"/></div>`;
+    return `<img src="${fileName}" alt="${fileName}">`;
   });
 }
 
@@ -57,13 +57,15 @@ function buildGallery(imageTags) {
       html += '</head>';
       html += '<body>';
       html += '  <h1>' + config.title + '</h1>';
-      html += imageNamesToTags(imageTags).join('')
-      html += '<div>'
+      html += '  <form method="GET" action="">';
+      html += '    <input type="text" name="title">';
+      html += '    <input type="submit" value="Change Gallery Title">';
+      html += '  </form>';
+      html += imageNamesToTags(imageTags).join('');
       html += ' <form action="" method="POST" enctype="multipart/form-data">';
       html += '   <input type="file" name="image">';
       html += '   <input type="submit" value="Upload Image">';
       html += ' </form>';
-      html += '</div>'
       html += '</body>';
   return html;
 }
@@ -118,7 +120,6 @@ function serveImage(fileName, req, res) {
 function uploadImage(req, res) {
   multipart(req, res, function(req, res) {
     // make sure an image was uploaded
-    console.log('filename', req.body.filename)
     if(!req.body.image.filename) {
       console.error("No file in upload");
       res.statusCode = 400;
