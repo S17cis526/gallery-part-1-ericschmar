@@ -27,10 +27,10 @@ template.loadDir('templates')
  * error and array of filenames as parameters
  */
 function getImageNames(callback) {
-  fs.readdir('images/', function(err, fileNames){
-    if(err) callback(err, undefined);
-    else callback(false, fileNames);
-  });
+    fs.readdir('images/', function(err, fileNames) {
+        if (err) callback(err, undefined);
+        else callback(false, fileNames);
+    });
 }
 
 /** @function imageNamesToTags
@@ -41,9 +41,9 @@ function getImageNames(callback) {
  * @return {string[]} an array of HTML img tags
  */
 function imageNamesToTags(fileNames) {
-  return fileNames.map(function(fileName) {
-    return `<img src="${fileName}" alt="${fileName}">`;
-  });
+    return fileNames.map(function(fileName) {
+        return `<img src="${fileName}" alt="${fileName}">`;
+    });
 }
 
 /**
@@ -67,17 +67,17 @@ function buildGallery(imageTags) {
  * @param {http.serverResponse} res - the response object
  */
 function serveGallery(req, res) {
-  getImageNames(function(err, imageNames){
-    if(err) {
-      console.error(err);
-      res.statusCode = 500;
-      res.statusMessage = 'Server error';
-      res.end();
-      return;
-    }
-    res.setHeader('Content-Type', 'text/html');
-    res.end(buildGallery(imageNames));
-  });
+    getImageNames(function(err, imageNames) {
+        if (err) {
+            console.error(err);
+            res.statusCode = 500;
+            res.statusMessage = 'Server error';
+            res.end();
+            return;
+        }
+        res.setHeader('Content-Type', 'text/html');
+        res.end(buildGallery(imageNames));
+    });
 }
 
 /** @function serveImage
@@ -88,17 +88,17 @@ function serveGallery(req, res) {
  * @param {http.serverResponse} - the response object
  */
 function serveImage(fileName, req, res) {
-  fs.readFile('images/' + decodeURIComponent(fileName), function(err, data){
-    if(err) {
-      console.error(err);
-      res.statusCode = 404;
-      res.statusMessage = "Resource not found";
-      res.end();
-      return;
-    }
-    res.setHeader('Content-Type', 'image/*');
-    res.end(data);
-  });
+    fs.readFile('images/' + decodeURIComponent(fileName), function(err, data) {
+        if (err) {
+            console.error(err);
+            res.statusCode = 404;
+            res.statusMessage = "Resource not found";
+            res.end();
+            return;
+        }
+        res.setHeader('Content-Type', 'image/*');
+        res.end(data);
+    });
 }
 
 /** @function uploadImage
@@ -108,26 +108,26 @@ function serveImage(fileName, req, res) {
  * @param {http.serverResponse} res - the response object
  */
 function uploadImage(req, res) {
-  multipart(req, res, function(req, res) {
-    // make sure an image was uploaded
-    if(!req.body.image.filename) {
-      console.error("No file in upload");
-      res.statusCode = 400;
-      res.statusMessage = "No file specified"
-      res.end("No file specified");
-      return;
-    }
-    fs.writeFile('images/' + req.body.image.filename, req.body.image.data, function(err){
-      if(err) {
-        console.error(err);
-        res.statusCode = 500;
-        res.statusMessage = "Server Error";
-        res.end("Server Error");
-        return;
-      }
-      serveGallery(req, res);
+    multipart(req, res, function(req, res) {
+        // make sure an image was uploaded
+        if (!req.body.image.filename) {
+            console.error("No file in upload");
+            res.statusCode = 400;
+            res.statusMessage = "No file specified"
+            res.end("No file specified");
+            return;
+        }
+        fs.writeFile('images/' + req.body.image.filename, req.body.image.data, function(err) {
+            if (err) {
+                console.error(err);
+                res.statusCode = 500;
+                res.statusMessage = "Server Error";
+                res.end("Server Error");
+                return;
+            }
+            serveGallery(req, res);
+        });
     });
-  });
 }
 
 /** @function handleRequest
@@ -137,38 +137,38 @@ function uploadImage(req, res) {
  * @param {http.serverResponse} res - the response object
  */
 function handleRequest(req, res) {
-  // at most, the url should have two parts -
-  // a resource and a querystring separated by a ?
-  var urlParts = url.parse(req.url);
+    // at most, the url should have two parts -
+    // a resource and a querystring separated by a ?
+    var urlParts = url.parse(req.url);
 
-  if(urlParts.query){
-    var matches = /title=(.+)($|&)/.exec(urlParts.query);
-    if(matches && matches[1]){
-      config.title = decodeURIComponent(matches[1]);
-      fs.writeFile('config.json', JSON.stringify(config));
+    if (urlParts.query) {
+        var matches = /title=(.+)($|&)/.exec(urlParts.query);
+        if (matches && matches[1]) {
+            config.title = decodeURIComponent(matches[1]);
+            fs.writeFile('config.json', JSON.stringify(config));
+        }
     }
-  }
 
-  switch(urlParts.pathname) {
-    case '/':
-    case '/gallery':
-      if(req.method == 'GET') {
-        serveGallery(req, res);
-      } else if(req.method == 'POST') {
-        uploadImage(req, res);
-      }
-      break;
-    case '/gallery.css':
-      res.setHeader('Content-Type', 'text/css');
-      res.end(stylesheet);
-      break;
-    default:
-      serveImage(req.url, req, res);
-  }
+    switch (urlParts.pathname) {
+        case '/':
+        case '/gallery':
+            if (req.method == 'GET') {
+                serveGallery(req, res);
+            } else if (req.method == 'POST') {
+                uploadImage(req, res);
+            }
+            break;
+        case '/gallery.css':
+            res.setHeader('Content-Type', 'text/css');
+            res.end(stylesheet);
+            break;
+        default:
+            serveImage(req.url, req, res);
+    }
 }
 
 /* Create and launch the webserver */
 var server = http.createServer(handleRequest);
-server.listen(port, function(){
-  console.log("Server is listening on port ", port);
+server.listen(port, function() {
+    console.log("Server is listening on port ", port);
 });
