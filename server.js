@@ -220,7 +220,7 @@ function uploadImage(req, res) {
 
 function buildJson(path, c, script) {
   console.log(path)
-  var ye = JSON.stringify({"Path": path,"Class": c,"Script": script})
+  var ye = JSON.stringify({"Path": c,"Class": c,"Script": script})
   return ye
 }
 

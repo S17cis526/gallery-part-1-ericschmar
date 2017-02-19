@@ -7,6 +7,12 @@ div img{
   height: 234px;
 }
 
+#sidebar {
+  float: right;
+  min-width: 200px;
+  min-height: 600px;
+}
+
 h1 {
   font-family: 'Noto Serif', serif;
   color: #D09683

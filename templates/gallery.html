@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <h1><%= context.title %></h1>
+    <a href="localhost:3000/"> <h1><%= context.title %></h1></a>
     <div>
         <form action="" method="POST" enctype="multipart/form-data">
             Enter Class Name : <input type="text" name="class">
@@ -19,8 +19,12 @@
             <input type="submit" value="Add Character">
         </form>
         <img src="Diablo-II-icon.png" alt="Diablo II Logo" id="staticd2">
+        <p>
+          Upload your own Diablo II Character and see it filled in!
+        </p>
     </div>
     <%= context.characterInfo.map((char) => { return '<div><h2>' + char.Class + '</h2>' + '<a href="' + char.Class + '"><img src="' + char.Path + '%" alt="' + char.Class + '"></a><b>' + char.Script + '</b></div>' }).join() %>
 </body>
+
 
 </html>
