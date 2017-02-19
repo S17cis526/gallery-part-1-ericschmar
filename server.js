@@ -38,11 +38,11 @@ function getImageNames(callback) {
   * returns an object containing all the characters as an array
   */
 function getChars() {
-  var characters = {}
+  var characters = []
   var files = fs.readdirSync('characters/');
   files.forEach((current) => {
     var curr = JSON.parse(fs.readFileSync('characters/' + current))
-    characters[curr["Class"]] = curr["Script"]
+    characters.push(curr)
   })
   return characters
 }
@@ -140,6 +140,9 @@ function uploadImage(req, res) {
             res.end("No file specified");
             return;
         }
+        console.log("inside upload")
+        console.log(req.body.class)
+        console.log(req.body.description)
         fs.writeFile('images/' + req.body.image.filename, req.body.image.data, function(err) {
             if (err) {
                 console.error(err);
@@ -148,9 +151,25 @@ function uploadImage(req, res) {
                 res.end("Server Error");
                 return;
             }
+        fs.writeFile('characters/' + req.body.class.toLowerCase() + ".json", buildJson(req.body.image.filename, req.body.class, req.body.description) , (err) => {
+            if (err) {
+                console.error(err);
+                res.statusCode = 500;
+                res.statusMessage = "Server Error";
+                res.end("Server Error");
+                return;
+            }
+          })
             serveGallery(req, res);
         });
     });
+}
+
+function buildJson(path, c, script) {
+  console.log(path)
+  var ye = JSON.stringify({"Path": path,"Class": c,"Script": script})
+  console.log(ye)
+  return ye
 }
 
 /** @function handleRequest
@@ -185,6 +204,19 @@ function handleRequest(req, res) {
             res.setHeader('Content-Type', 'text/css');
             res.end(stylesheet);
             break;
+        case '/Diablo-II-icon.png':
+            fs.readFile('Diablo-II-icon.png', (err, data) => {
+              if (err) {
+                  console.error(err);
+                  res.statusCode = 404;
+                  res.statusMessage = "Resource not found";
+                  res.end();
+                  return;
+              }
+              res.setHeader('Content-Type', 'image/*');
+              res.end(data);
+            })
+            break
         default:
             serveImage(req.url, req, res);
     }

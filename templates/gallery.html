@@ -12,17 +12,15 @@
 <body>
     <h1><%= context.title %></h1>
     <div>
-        <form method="GET" action="">
-            <input type="text" name="title">
-            <input type="submit" value="Change Gallery Title">
-        </form>
         <form action="" method="POST" enctype="multipart/form-data">
+            Enter Class Name : <input type="text" name="class">
+            <textarea name="description" cols="75" rows="5"></textarea>
             <input type="file" name="image">
-            <input type="submit" value="Upload Image">
+            <input type="submit" value="Add Character">
         </form>
-        <img src="Diablo-II-icon.png" alt="Diablo II Logo">
+        <img src="Diablo-II-icon.png" alt="Diablo II Logo" id="staticd2">
     </div>
-    <%= context.fileNames.map(function(fileName) { return '<div><h2>' + fileName.replace('.gif', '') + '</h2>' + '<img src="' + fileName + '" alt="' + fileName + '"><b>' + context.characterInfo[fileName.replace('.gif', '')] + '</b></div>' }).join('') %>
+    <%= context.characterInfo.map((char) => { console.log(context); return '<div><h2>' + char.Class + '</h2>' + '<img src="' + char.Path + '" alt="' + char.Class + '"><b>' + char.Script + '</b></div>' }).join('') %>
 </body>
 
 </html>

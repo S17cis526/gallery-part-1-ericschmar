@@ -7,10 +7,19 @@ div img{
 
 h1 {
   font-family: 'Noto Serif', serif;
+  color: #D09683
 }
 
 div h2 {
+  font-family: 'Noto Serif', serif;
+  color: #D09683;
   margin: 5px;
+}
+
+#staticd2 {
+  display: block;
+  margin: 0 auto;
+  float: none;
 }
 
 div {
@@ -22,10 +31,14 @@ div {
   vertical-align: top;
   display: inline-block;
   margin: 5px;
-  background-color: #900C3F;
+  background-color: #73605B;
   box-sizing: border-box;
   padding: 10px;
 
+}
+
+body {
+  background-color: #363237;
 }
 
 div body {
@@ -42,7 +55,7 @@ div form{
 
 input[type=text] {
     font-family: 'Noto Serif', serif;
-    padding:5px;
+    padding:7px;
     border:2px solid #ccc;
     border-radius: 5px;
 }
@@ -53,7 +66,7 @@ input[type=text]:focus {
 
 input[type=file] {
     font-family: 'Noto Serif', serif;
-    padding:5px;
+    padding:7px;
     border:2px solid #ccc;
     border-radius: 5px;
 }
