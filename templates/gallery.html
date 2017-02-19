@@ -20,7 +20,7 @@
         </form>
         <img src="Diablo-II-icon.png" alt="Diablo II Logo" id="staticd2">
     </div>
-    <%= context.characterInfo.map((char) => { console.log(context); return '<div><h2>' + char.Class + '</h2>' + '<img src="' + char.Path + '" alt="' + char.Class + '"><b>' + char.Script + '</b></div>' }).join('') %>
+    <%= context.characterInfo.map((char) => { return '<div><h2>' + char.Class + '</h2>' + '<a href="' + char.Class + '"><img src="' + char.Path + '%" alt="' + char.Class + '"></a><b>' + char.Script + '</b></div>' }).join() %>
 </body>
 
 </html>

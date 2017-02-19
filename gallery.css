@@ -18,6 +18,11 @@ div h2 {
   margin: 5px;
 }
 
+#single {
+  width: 200px;
+  height: 300px;
+}
+
 #staticd2 {
   display: block;
   margin: 0 auto;

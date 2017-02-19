@@ -17,6 +17,7 @@ var port = 3000;
 var config = JSON.parse(fs.readFileSync('config.json'));
 var stylesheet = fs.readFileSync('gallery.css');
 
+
 /* load templates */
 template.loadDir('templates')
 
@@ -33,18 +34,31 @@ function getImageNames(callback) {
     });
 }
 
+function getOneImageName(name, callback) {
+  fs.readdir('images/' + name, function(err, file) {
+    if(err) callback(err, undefined)
+    else {
+      callback(false, file)
+    }
+  } )
+}
+
 /** @function getChars
   * function to get the character info from json.
   * returns an object containing all the characters as an array
   */
-function getChars() {
+function getChars(callback) {
   var characters = []
-  var files = fs.readdirSync('characters/');
-  files.forEach((current) => {
-    var curr = JSON.parse(fs.readFileSync('characters/' + current))
-    characters.push(curr)
+  fs.readdir('characters/', (err, files) => {
+      if (err) callback(err, undefined)
+      else {
+        files.forEach((current) => {
+          var curr = JSON.parse(fs.readFileSync('characters/' + current))
+          characters.push(curr)
+        })
+        callback(false, characters)
+      }
   })
-  return characters
 }
 
 /** @function imageNamesToTags
@@ -67,18 +81,51 @@ function imageNamesToTags(fileNames) {
  * @param {string[]} imageTags - the HTML for the individual
  * gallery images.
  */
-function buildGallery(imageTags) {
-  var chars = getChars()
-  if(chars == -1) {
-      return
-    }
-  else {
-      return template.render('gallery.html', {
+function buildGallery(imageTags, callback) {
+   getChars((err, files) => {
+    if (err) {
+      callback(err, undefined)
+    } else {
+      callback(false, template.render('gallery.html', {
         title: config.title,
         fileNames: imageTags,
-        characterInfo: chars
-      });
+        characterInfo: files
+      }));
     }
+  })
+}
+
+function buildSingleChar(imageTag, callback) {
+  getChars((err, files) => {
+    if (err) {
+      callback(err, undefined)
+    } else {
+      callback(false, template.render('single.html', {
+        title: config.title,
+        fileNames: imageTag,
+        characterInfo: files.filter((char) => {
+          var c = imageTag.split('images/')
+          if (char.Class == c[1]) return true
+          else false
+        })
+      }));
+    }
+  })
+}
+
+function serveSingleChar(req, res, name) {
+    res.setHeader('Content-Type', 'text/html');
+    buildSingleChar('images/' + name, (err, html) => {
+      if(err) {
+        console.error(err);
+        res.statusCode = 500;
+        res.statusMessage = 'Server error';
+        res.end();
+        return;
+      } else {
+        res.end(html);
+      }
+    })
 }
 
 
@@ -98,8 +145,17 @@ function serveGallery(req, res) {
             return;
         }
         res.setHeader('Content-Type', 'text/html');
-        var html = buildGallery(imageNames)
-        res.end(html);
+        buildGallery(imageNames, (err, html) => {
+          if(err) {
+            console.error(err);
+            res.statusCode = 500;
+            res.statusMessage = 'Server error';
+            res.end();
+            return;
+          } else {
+            res.end(html);
+          }
+        })
     });
 }
 
@@ -111,7 +167,7 @@ function serveGallery(req, res) {
  * @param {http.serverResponse} - the response object
  */
 function serveImage(fileName, req, res) {
-    fs.readFile('images/' + decodeURIComponent(fileName), function(err, data) {
+    fs.readFile('images' + decodeURIComponent(fileName.substring(0, fileName.length - 1)), function(err, data) {
         if (err) {
             console.error(err);
             res.statusCode = 404;
@@ -140,10 +196,7 @@ function uploadImage(req, res) {
             res.end("No file specified");
             return;
         }
-        console.log("inside upload")
-        console.log(req.body.class)
-        console.log(req.body.description)
-        fs.writeFile('images/' + req.body.image.filename, req.body.image.data, function(err) {
+        fs.writeFile('images/' + req.body.class.toLowerCase(), req.body.image.data, function(err) {
             if (err) {
                 console.error(err);
                 res.statusCode = 500;
@@ -168,7 +221,6 @@ function uploadImage(req, res) {
 function buildJson(path, c, script) {
   console.log(path)
   var ye = JSON.stringify({"Path": path,"Class": c,"Script": script})
-  console.log(ye)
   return ye
 }
 
@@ -183,6 +235,10 @@ function handleRequest(req, res) {
     // a resource and a querystring separated by a ?
     var urlParts = url.parse(req.url);
 
+    var characters = fs.readdirSync('characters/').map((file) => {
+      return file.split('.json')[0]
+    })
+
     if (urlParts.query) {
         var matches = /title=(.+)($|&)/.exec(urlParts.query);
         if (matches && matches[1]) {
@@ -190,35 +246,39 @@ function handleRequest(req, res) {
             fs.writeFile('config.json', JSON.stringify(config));
         }
     }
-
-    switch (urlParts.pathname) {
-        case '/':
-        case '/gallery':
-            if (req.method == 'GET') {
-                serveGallery(req, res);
-            } else if (req.method == 'POST') {
-                uploadImage(req, res);
-            }
-            break;
-        case '/gallery.css':
-            res.setHeader('Content-Type', 'text/css');
-            res.end(stylesheet);
-            break;
-        case '/Diablo-II-icon.png':
-            fs.readFile('Diablo-II-icon.png', (err, data) => {
-              if (err) {
-                  console.error(err);
-                  res.statusCode = 404;
-                  res.statusMessage = "Resource not found";
-                  res.end();
-                  return;
+    var path = urlParts.pathname.slice(1, urlParts.pathname.length)
+    if (characters.indexOf(path) >= 0) {
+      serveSingleChar(req, res, path)
+    } else {
+      switch (urlParts.pathname) {
+          case '/':
+          case '/gallery':
+              if (req.method == 'GET') {
+                  serveGallery(req, res);
+              } else if (req.method == 'POST') {
+                  uploadImage(req, res);
               }
-              res.setHeader('Content-Type', 'image/*');
-              res.end(data);
-            })
-            break
-        default:
-            serveImage(req.url, req, res);
+              break;
+          case '/gallery.css':
+              res.setHeader('Content-Type', 'text/css');
+              res.end(stylesheet);
+              break;
+          case '/Diablo-II-icon.png':
+              fs.readFile('Diablo-II-icon.png', (err, data) => {
+                if (err) {
+                    console.error(err);
+                    res.statusCode = 404;
+                    res.statusMessage = "Resource not found";
+                    res.end();
+                    return;
+                }
+                res.setHeader('Content-Type', 'image/*');
+                res.end(data);
+              })
+              break
+          default:
+              serveImage(req.url, req, res);
+      }
     }
 }
 

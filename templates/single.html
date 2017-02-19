@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>
+        <%= context.title %>
+    </title>
+    <link href="gallery.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif" rel="stylesheet">
+</head>
+
+<body>
+    <h1><%= context.title %></h1>
+    <div>
+        <img src="Diablo-II-icon.png" alt="Diablo II Logo" id="staticd2">
+    </div>
+    <%= context.characterInfo.map((char) => { return '<div><h2>' + char.Class + '</h2>' + '<img src="' + char.Path + '%" id="single" alt="' + char.Class + '"><b>' + char.Script + '</b></div>' }).join('') %>
+</body>
+
+</html>
