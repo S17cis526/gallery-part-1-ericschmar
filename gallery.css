@@ -3,6 +3,8 @@ div img{
   margin: 10px;
   display: inline-block;
   float: left;
+  width: 123px;
+  height: 234px;
 }
 
 h1 {
@@ -20,6 +22,8 @@ div h2 {
   display: block;
   margin: 0 auto;
   float: none;
+  width: auto;
+  height: auto;
 }
 
 div {
