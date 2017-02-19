@@ -2,21 +2,27 @@
 <html>
 
 <head>
-    <title><%= context.title %></title>
+    <title>
+        <%= context.title %>
+    </title>
     <link href="gallery.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Serif" rel="stylesheet">
 </head>
 
 <body>
     <h1><%= context.title %></h1>
-    <form method="GET" action="">
-        <input type="text" name="title">
-        <input type="submit" value="Change Gallery Title">
-    </form>
-    <%= context.fileNames.map(function(fileName) { return '<img src="' + fileName + '" alt="' + fileName + '">' }).join('') %>
-    <form action="" method="POST" enctype="multipart/form-data">
-        <input type="file" name="image">
-        <input type="submit" value="Upload Image">
-    </form>
+    <div>
+        <form method="GET" action="">
+            <input type="text" name="title">
+            <input type="submit" value="Change Gallery Title">
+        </form>
+        <form action="" method="POST" enctype="multipart/form-data">
+            <input type="file" name="image">
+            <input type="submit" value="Upload Image">
+        </form>
+        <img src="Diablo-II-icon.png" alt="Diablo II Logo">
+    </div>
+    <%= context.fileNames.map(function(fileName) { return '<div><h2>' + fileName.replace('.gif', '') + '</h2>' + '<img src="' + fileName + '" alt="' + fileName + '"><b>' + context.characterInfo[fileName.replace('.gif', '')] + '</b></div>' }).join('') %>
 </body>
 
 </html>

@@ -33,6 +33,20 @@ function getImageNames(callback) {
     });
 }
 
+/** @function getChars
+  * function to get the character info from json.
+  * returns an object containing all the characters as an array
+  */
+function getChars() {
+  var characters = {}
+  var files = fs.readdirSync('characters/');
+  files.forEach((current) => {
+    var curr = JSON.parse(fs.readFileSync('characters/' + current))
+    characters[curr["Class"]] = curr["Script"]
+  })
+  return characters
+}
+
 /** @function imageNamesToTags
  * Helper function that takes an array of image
  * filenames, and returns an array of HTML img
@@ -54,11 +68,19 @@ function imageNamesToTags(fileNames) {
  * gallery images.
  */
 function buildGallery(imageTags) {
-  return template.render('gallery.html', {
-    title: config.title,
-    fileNames: imageTags
-  });
+  var chars = getChars()
+  if(chars == -1) {
+      return
+    }
+  else {
+      return template.render('gallery.html', {
+        title: config.title,
+        fileNames: imageTags,
+        characterInfo: chars
+      });
+    }
 }
+
 
 /** @function serveGallery
  * A function to serve a HTML page representing a
@@ -76,7 +98,8 @@ function serveGallery(req, res) {
             return;
         }
         res.setHeader('Content-Type', 'text/html');
-        res.end(buildGallery(imageNames));
+        var html = buildGallery(imageNames)
+        res.end(html);
     });
 }
 

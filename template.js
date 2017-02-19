@@ -30,8 +30,10 @@ function loadDir(directory) {
   * @param {...}
   */
 function render(templateName, context) {
-  return templates[templateName].replace(/<%=(.+)%>/g, (match, js) => {
+  //console.log(templateName)
+  var html =  templates[templateName].replace(/<%=(.+)%>/g, (match, js) => {
     return eval("var context = " + JSON.stringify(context) + ";" + js)
   })
+  //console.log(html);
   return html
 }
