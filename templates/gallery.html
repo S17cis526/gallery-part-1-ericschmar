@@ -7,16 +7,21 @@
 </head>
 
 <body>
-    <h1><%= context.title %></h1>
-    <form method="GET" action="">
+    <h1 id="gallery-title"><%= context.title %></h1>
+    <form id="gallery-title-edit" method="GET" action="">
         <input type="text" name="title">
         <input type="submit" value="Change Gallery Title">
     </form>
     <%= context.fileNames.map(function(fileName) { return '<img src="' + fileName + '" alt="' + fileName + '">' }).join('') %>
-    <form action="" method="POST" enctype="multipart/form-data">
+    <form id="image-upload-form" action="" method="POST" enctype="multipart/form-data">
+        <h2>Upload Image</h2>
+        <label for="image">
+          Image File:
         <input type="file" name="image">
+      </label>
         <input type="submit" value="Upload Image">
     </form>
+    <script src="gallery.js"></script>
 </body>
 
 </html>

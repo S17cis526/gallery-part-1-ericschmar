@@ -1,19 +1,23 @@
 img {
-  width: 450px;
-  margin: auto;
+  width: 250px;
 }
 
-div img{
-  margin: 10px;
+#gallery-title {
+  cursor: pointer;
 }
 
-div {
-  display: inline-block;
+#gallery-title-edit {
+  display: none;
 }
 
-div form{
-  margin-top: 10px;
-  margin-bottom: 10px;
+#image-upload-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: pink;
+  border-radius: 5px;
+  border: 2px solid red;
+  padding: 10px;
 }
 
 input[type=text] {
