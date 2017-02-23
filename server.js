@@ -8,6 +8,7 @@
 /* global variables */
 var multipart = require('./multipart');
 var template = require('./template')
+var staticFiles = require('./static')
 var http = require('http');
 var url = require('url');
 var fs = require('fs');
@@ -17,6 +18,9 @@ var port = 3000;
 var config = JSON.parse(fs.readFileSync('config.json'));
 var stylesheet = fs.readFileSync('public/gallery.css');
 var script = fs.readFileSync('public/gallery.js')
+
+/* load public directory */
+staticFiles.loadDir('public')
 
 /* load templates */
 template.loadDir('templates')
