@@ -50,7 +50,9 @@ function getOneImageName(name, callback) {
 function getChars(callback) {
   var characters = []
   fs.readdir('characters/', (err, files) => {
-      if (err) callback(err, undefined)
+      if (err) {
+        callback(err, undefined)
+      }
       else {
         files.forEach((current) => {
           var curr = JSON.parse(fs.readFileSync('characters/' + current))
@@ -92,7 +94,7 @@ function buildGallery(imageTags, callback) {
         characterInfo: files
       }));
     }
-  })
+  });
 }
 
 function buildSingleChar(imageTag, callback) {
@@ -155,7 +157,7 @@ function serveGallery(req, res) {
           } else {
             res.end(html);
           }
-        })
+        });
     });
 }
 
@@ -204,22 +206,21 @@ function uploadImage(req, res) {
                 res.end("Server Error");
                 return;
             }
-        fs.writeFile('characters/' + req.body.class.toLowerCase() + ".json", buildJson(req.body.image.filename, req.body.class, req.body.description) , (err) => {
-            if (err) {
-                console.error(err);
-                res.statusCode = 500;
-                res.statusMessage = "Server Error";
-                res.end("Server Error");
-                return;
-            }
-          })
-            serveGallery(req, res);
+            fs.writeFile('characters/' + req.body.class.toLowerCase() + ".json", buildJson(req.body.image.filename, req.body.class, req.body.description) , (err) => {
+              if (err) {
+                  console.error(err);
+                  res.statusCode = 500;
+                  res.statusMessage = "Server Error";
+                  res.end("Server Error");
+                  return;
+              }
+          });
+          serveGallery(req, res);
         });
     });
 }
 
 function buildJson(path, c, script) {
-  console.log(path)
   var ye = JSON.stringify({"Path": c,"Class": c,"Script": script})
   return ye
 }
